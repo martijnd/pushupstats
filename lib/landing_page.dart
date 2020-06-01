@@ -77,9 +77,11 @@ class _FirstScreenState extends State<FirstScreen> {
                           _formattedDate =
                               '${DateFormat("dd").format(date)}-${DateFormat("MM").format(date)}-${DateFormat("yyyy").format(date)}';
                           _date =
-                              '${DateFormat("yyyy").format(date)}-${DateFormat("MM").format(date)}-${DateFormat("dddd").format(date)}';
+                              '${DateFormat("yyyy").format(date)}-${DateFormat("MM").format(date)}-${DateFormat("dd").format(date)}';
                           setState(() {});
-                        }, currentTime: DateTime.now(), locale: LocaleType.en);
+                        },
+                            currentTime: DateTime.parse(_date),
+                            locale: LocaleType.en);
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -248,6 +250,7 @@ class PushupList extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   DateTime date = list[index]["date"].toDate();
                   String amount = list[index]["amount"].toString();
+
                   String formattedDate =
                       DateFormat("dd-MM-yyyy hh:mm").format(date);
                   return PushupCard(
@@ -277,18 +280,34 @@ class PushupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: GestureDetector(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        ListTile(
+          contentPadding: EdgeInsets.all(10.0),
           onTap: () => _showDialog(context, documentID),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                title: Text("Amount: " + amount.toString()),
-                subtitle: Text("Date: " + formattedDate),
-              )
-            ],
-          )),
-    );
+          title: Text(
+            "${amount.toString()} pushups",
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+                color: Colors.orange[800]),
+          ),
+          subtitle: Text(
+            "On " +
+                formattedDate.split(" ")[0] +
+                " at " +
+                formattedDate.split(" ")[1],
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.orange[600],
+                fontSize: 15.0,
+                height: 2.0),
+          ),
+          leading: Icon(Icons.fitness_center),
+        )
+      ],
+    ));
   }
 
   Future<void> _showDialog(context, String documentID) async {
