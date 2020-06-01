@@ -13,4 +13,21 @@ class DatabaseService {
         .collection("pushups")
         .add({'amount': amount, 'date': date});
   }
+
+  Stream<QuerySnapshot> getPushups() {
+    Stream<QuerySnapshot> results = usersCollection
+        .document(uid)
+        .collection("pushups")
+        .orderBy('date')
+        .snapshots();
+    return results;
+  }
+
+  Future deletePushup(String id) async {
+    return await usersCollection
+        .document(uid)
+        .collection("pushups")
+        .document(id)
+        .delete();
+  }
 }
