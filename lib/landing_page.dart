@@ -16,16 +16,13 @@ class FirstScreen extends StatefulWidget {
 
 @override
 class _FirstScreenState extends State<FirstScreen> {
-  TextEditingController _controller;
   int amount;
 
   void initState() {
     super.initState();
-    _controller = TextEditingController();
   }
 
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -36,56 +33,28 @@ class _FirstScreenState extends State<FirstScreen> {
         title: const Text('PushupStats'),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [Colors.blue[100], Colors.blue[400]],
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              TextField(
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
-              ),
-              RaisedButton(
-                child: Text('Create Record'),
-                onPressed: () async {
-                  // create a new document for the user with the uid
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Amount of pushups',
+              style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              onSubmitted: (String value) async {
+                if (value.length != 0) {
                   await DatabaseService(uid: uid)
-                      .addPushup(int.parse(_controller.text), DateTime.now());
-                },
-              ),
-              SizedBox(height: 40),
-              RaisedButton(
-                onPressed: () {
-                  signOutGoogle();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) {
-                    return LoginPage();
-                  }), ModalRoute.withName('/'));
-                },
-                color: Colors.deepPurple,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Sign Out',
-                    style: TextStyle(fontSize: 25, color: Colors.white),
-                  ),
-                ),
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40)),
-              )
-            ],
-          ),
+                      .addPushup(int.parse(value), DateTime.now());
+                }
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                WhitelistingTextInputFormatter.digitsOnly
+              ],
+            ),
+          ],
         ),
       ),
     );
